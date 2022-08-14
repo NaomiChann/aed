@@ -14,27 +14,28 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_NAME_SIZE 21
+#define MAX_NAME_SIZE 20
 
-void NameAdd( char *list );
-void NameRemove( char *list );
+char* NameAdd( char *list );
+char* NameRemove( char *list );
 
 int main() {
     int input, userCheck = 1;
-    char *list = ( char * ) calloc( 1, sizeof( char ) );    // because calloc takes out the garbage
+    char *list;
+    list = ( char * ) calloc( 1, sizeof( char ) );    // because calloc takes out the garbage
 
     while ( userCheck == 1 ) {
         printf( "\nEscolha uma acao: \n1) Adicionar nome \n2) Remover nome \n3) Listar \n4) Sair \n" );
         scanf( "%d", &input );
-        getc( stdin );
+        fflush( stdin );
 
         switch ( input ) {
             case 1:
-                NameAdd( list );
+                list = NameAdd( list );
                 break;
 
             case 2:
-                NameRemove( list );
+                list = NameRemove( list );
                 break;
 
             case 3:
@@ -61,26 +62,26 @@ NameAdd
  Adds name to the list string
 ====================
 */
-void NameAdd( char *list ) {
-    char name[MAX_NAME_SIZE], *newLine;
+char* NameAdd( char *list ) {
+    char name[MAX_NAME_SIZE + 2] = ">", nameTemp[MAX_NAME_SIZE + 1];
 
     printf( "Digite o nome a ser adicionado: " );
-    fgets( name, MAX_NAME_SIZE, stdin );
-    newLine = strchr( name, '\n' );
-
-    if ( newLine == NULL ) {
-        while ( getc( stdin ) != '\n' ) {
-            // nothing
-        }
-        strcat( name, "\n" );
-    } else if ( strlen( name ) < 2 ) {
+    scanf("%20s", nameTemp);
+    fflush( stdin );
+    if ( strlen( nameTemp ) == 1 ) {
         printf( "Digite um nome valido.\n" );
-        return;
+        return list;
     }
+    strcat( nameTemp, "\n" );
+    strcat( name, nameTemp );
 
-    list = ( char * ) realloc( list, ( strlen( list ) + strlen( name ) + 1 ) * sizeof( char ));
+    int size = strlen( list ) + strlen( name );
+
+    list = ( char * ) realloc( list, ( size + 1 ) * sizeof( char ) );
 
     strcat( list, name );
+
+    return list;
 }
 
 /*
@@ -89,29 +90,30 @@ NameRemove
  Removes name from the list string
 ====================
 */
-void NameRemove( char *list ) {
-    char name[MAX_NAME_SIZE], *newLine, *namePosition, *nameEnd;
+char* NameRemove( char *list ) {
+    char name[MAX_NAME_SIZE + 2] = ">", nameTemp[MAX_NAME_SIZE + 1], *namePosition, *nameEnd;
 
     printf( "Digite o nome a ser removido: " );
-    fgets( name, MAX_NAME_SIZE, stdin );
-    newLine = strchr( name, '\n' );
-
-    if ( newLine == NULL ) {
-        while ( getc( stdin ) != '\n' ) {
-            // nothing
-        }
-        strcat( name, "\n" );
-    } else if ( strlen( name ) < 2 ) {
+    scanf("%20s", nameTemp);
+    fflush( stdin );
+    if ( strlen( nameTemp ) == 1 ) {
         printf( "Digite um nome valido.\n" );
-        return;
+        return list;
     }
+    strcat( nameTemp, "\n" );
+    strcat( name, nameTemp );
 
     namePosition = strstr( list, name );
-    nameEnd = namePosition + strlen( name );
+    if ( namePosition != NULL ) {
+        nameEnd = namePosition + strlen( name );
 
-    for (int i = 0; i < ( ( list + strlen( list ) ) - ( nameEnd + strlen( nameEnd ) ) ); i++) {
-        namePosition[i] = nameEnd[i];
+        memmove( namePosition, nameEnd, strlen( nameEnd ) + 1 );
+
+        list = ( char * ) realloc( list, ( strlen( list ) + 1 ) * sizeof( char ) );
+
+        return list;
+    } else {
+        printf( "Nome nao listado.\n" );
+        return list;
     }
-
-    list = ( char * ) realloc( list, ( strlen( list ) + 1 ) * sizeof( char ) );
 }
