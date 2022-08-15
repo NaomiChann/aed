@@ -16,8 +16,8 @@
 
 #define MAX_NAME_SIZE 20
 
-char* NameAdd( char *list );
-char* NameRemove( char *list );
+void NameAdd( char *list );
+void NameRemove( char *list );
 
 int main() {
     int input, userCheck = 1;
@@ -31,11 +31,11 @@ int main() {
 
         switch ( input ) {
             case 1:
-                list = NameAdd( list );
+                NameAdd( list );
                 break;
 
             case 2:
-                list = NameRemove( list );
+                NameRemove( list );
                 break;
 
             case 3:
@@ -62,7 +62,7 @@ NameAdd
  Adds name to the list string
 ====================
 */
-char* NameAdd( char *list ) {
+void NameAdd( char *list ) {
     char name[MAX_NAME_SIZE + 2] = ">", nameTemp[MAX_NAME_SIZE + 1];
 
     printf( "Digite o nome a ser adicionado: " );
@@ -70,7 +70,7 @@ char* NameAdd( char *list ) {
     fflush( stdin );
     if ( strlen( nameTemp ) == 1 ) {
         printf( "Digite um nome valido.\n" );
-        return list;
+        return;
     }
     strcat( nameTemp, "\n" );
     strcat( name, nameTemp );
@@ -81,7 +81,7 @@ char* NameAdd( char *list ) {
 
     strcat( list, name );
 
-    return list;
+    return;
 }
 
 /*
@@ -90,7 +90,7 @@ NameRemove
  Removes name from the list string
 ====================
 */
-char* NameRemove( char *list ) {
+void NameRemove( char *list ) {
     char name[MAX_NAME_SIZE + 2] = ">", nameTemp[MAX_NAME_SIZE + 1], *namePosition, *nameEnd;
 
     printf( "Digite o nome a ser removido: " );
@@ -98,7 +98,7 @@ char* NameRemove( char *list ) {
     fflush( stdin );
     if ( strlen( nameTemp ) == 1 ) {
         printf( "Digite um nome valido.\n" );
-        return list;
+        return;
     }
     strcat( nameTemp, "\n" );
     strcat( name, nameTemp );
@@ -111,9 +111,9 @@ char* NameRemove( char *list ) {
 
         list = ( char * ) realloc( list, ( strlen( list ) + 1 ) * sizeof( char ) );
 
-        return list;
+        return;
     } else {
         printf( "Nome nao listado.\n" );
-        return list;
+        return;
     }
 }
