@@ -18,17 +18,14 @@
 
 void *ContactAdd( void *pBuffer, int *userCount );
 void *ContactRemove( void *pBuffer, int *userCount );
-void ContactSearch( void *pBuffer, int *userCount );
+void ContactSearch( void *pBuffer, int *userCount, char nome[10] );
 void ContactList( void *pBuffer, int *userCount );
 
 int main() {
 	void *pBuffer;
 	int input, userCheck = 1, userCount = 0;
+	char nome[10];
 	pBuffer = malloc( 1 );
-	if ( pBuffer == NULL ) {
-		printf( "Memoria insuficiente.\n" );
-		return ( 1 );
-	}
 
 	while ( userCheck == 1 ) {
         printf( "\nEscolha uma acao: \n1) Adicionar contato \n2) Remover contato \n3) Procurar \n4) Listar \n5) Sair \n" );
@@ -45,7 +42,10 @@ int main() {
                 break;
 
             case 3:
-				ContactSearch( pBuffer, &userCount );
+				printf( "Digite sua busca: " );
+				scanf( "%9s", nome );
+				fflush( stdin );
+				ContactSearch( pBuffer, &userCount, nome );
                 break;
                 
             case 4:
@@ -140,7 +140,7 @@ void *ContactRemove( void *pBuffer, int *userCount ) {
 	}
 
 	char nome[10], *pNome, *nomeTemp;
-	int *idade, *telefone, *idadeTemp, *telefoneTemp, test = 0;
+	int *idade, *telefone, *idadeTemp, *telefoneTemp, test = 0, testI, remove;
 	void *dummy;
 
 	dummy = pBuffer;
@@ -148,7 +148,7 @@ void *ContactRemove( void *pBuffer, int *userCount ) {
 	printf( "Digite o nome a ser removido: " );
     scanf( "%9s", nome );
     fflush( stdin );
-
+	
 	for ( int i = 0; i < *userCount; i++ ) {
 		pNome = pBuffer + ( i * SIZE_CONTACT );
 
@@ -156,41 +156,69 @@ void *ContactRemove( void *pBuffer, int *userCount ) {
 			if ( *pNome != nome[j] ) {
 				break;
 			} else if ( nome[j] == '\0' ) {
-				test = 1;
+				test++;
+				testI = i;
 				break;
 			}
 			pNome++;
 		}
+	}
 
-		if ( test == 1 ) {
-			if ( i != *userCount - 1 ) {
-				pBuffer += ( i * SIZE_CONTACT );
+	if ( test > 1 ) {
+		printf( "Multiplos usuarios, escolha:\n" );
+		do {
+			ContactSearch( pBuffer, userCount, nome );
+			scanf( "%d", &remove );
+			fflush( stdin );
 
-				for ( int j = 0; j < *userCount - i - 1; j++ ) {
-					pNome = pBuffer;
-					idade = pBuffer + SIZE_NAME;
-					telefone = idade + 1;
+			if ( remove > 0 ) {
+				pNome = pBuffer + ( ( remove - 1 ) * SIZE_CONTACT );
 
-					pBuffer += SIZE_CONTACT;
-
-					for ( int k = 0; k < 10; k++ ) {
-						nomeTemp = pBuffer + ( k * sizeof( char ) );
-						*pNome = *nomeTemp;
-						pNome++;
+				for ( int j = 0; j < 10; j++ ) {
+					if ( *pNome != nome[j] ) {
+						break;
+					} else if ( nome[j] == '\0' ) {
+						test = 1;
 					}
-
-					idadeTemp = pBuffer + SIZE_NAME;
-					*idade = *idadeTemp;
-					telefoneTemp = idadeTemp + 1;
-					*telefone = *telefoneTemp;
+					pNome++;
 				}
 			}
 
-			pBuffer = dummy;
-			pBuffer = realloc( pBuffer, ( *userCount * SIZE_CONTACT ) - SIZE_CONTACT );
-			*userCount -= 1;
-			return ( pBuffer );
+			if ( test != 1 ) {
+				printf( "Escolha um numero valido.\n" );
+			}
+		} while ( test != 1 );
+		testI = remove - 1;
+	}
+
+	if ( test == 1 ) {
+		if ( testI != *userCount - 1 ) {
+			pBuffer += ( testI * SIZE_CONTACT );
+
+			for ( int j = 0; j < *userCount - testI - 1; j++ ) {
+				pNome = pBuffer;
+				idade = pBuffer + SIZE_NAME;
+				telefone = idade + 1;
+
+				pBuffer += SIZE_CONTACT;
+
+				for ( int k = 0; k < 10; k++ ) {
+					nomeTemp = pBuffer + ( k * sizeof( char ) );
+					*pNome = *nomeTemp;
+					pNome++;
+				}
+
+				idadeTemp = pBuffer + SIZE_NAME;
+				*idade = *idadeTemp;
+				telefoneTemp = idadeTemp + 1;
+				*telefone = *telefoneTemp;
+			}
 		}
+
+		pBuffer = dummy;
+		pBuffer = realloc( pBuffer, ( *userCount * SIZE_CONTACT ) - SIZE_CONTACT );
+		*userCount -= 1;
+		return ( pBuffer );
 	}
 
 	printf( "Contato nao encontrado.\n" );
@@ -203,18 +231,14 @@ ContactSearch
  Searches for a specific contact
 ====================
 */
-void ContactSearch( void *pBuffer, int *userCount ) {
+void ContactSearch( void *pBuffer, int *userCount, char nome[10] ) {
 	if ( *userCount == 0 ) {
 		printf( "Nenhum contato no sistema.\n" );
 		return;
 	}
 
-	char nome[10], *pNome;
-	int *idade, *telefone, test = 0;
-
-	printf( "Digite sua busca: " );
-    scanf( "%9s", nome );
-    fflush( stdin );
+	char *pNome;
+	int *idade, *telefone, test = 0, test2 = 1;
 
 	for ( int i = 0; i < *userCount; i++ ) {
 		pNome = pBuffer + ( i * SIZE_CONTACT );
@@ -231,19 +255,22 @@ void ContactSearch( void *pBuffer, int *userCount ) {
 
 		if ( test == 1 ) {
 			pNome = pBuffer + ( i * SIZE_CONTACT );
-			printf( "%s, ", pNome );
+			printf( "<%d> %s, ", i + 1, pNome );
 
 			idade = pBuffer + ( i * SIZE_CONTACT ) + SIZE_NAME;
 			printf( "%d anos ", *idade );
 
 			telefone = idade + 1;
 			printf( "- telefone: %d\n", *telefone );
-
-			return;
+			test = 0;
+			test2 = 0;
 		}
 	}
 
-	printf( "Contato nao encontrado.\n" );
+	if ( test2 == 1 ) {
+		printf( "Contato nao encontrado.\n" );
+	}
+
 	return;
 }
 
