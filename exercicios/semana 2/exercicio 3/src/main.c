@@ -67,9 +67,9 @@ ContactAdd
 ====================
 */
 void *ContactAdd( void *pBuffer, int *userCount ) {
-	char nome[10], *pNome = NULL;
-	int *idade = NULL, *telefone = NULL, teste = 0;
-	void *dummy = NULL;
+	char nome[10], *pNome;
+	int *idade, *telefone, teste = 0;
+	void *dummy;
 
 	pBuffer = realloc( pBuffer, ( *userCount + 1 ) * SIZE_CONTACT );
 	dummy = pBuffer;
@@ -135,9 +135,9 @@ void *ContactRemove( void *pBuffer, int *userCount ) {
 		return pBuffer;
 	}
 
-	char nome[10], *pNome = NULL, *nomeTemp = NULL;
-	int *idade = NULL, *telefone = NULL, *idadeTemp = NULL, *telefoneTemp = NULL, test = 0;
-	void *dummy = NULL;
+	char nome[10], *pNome, *nomeTemp;
+	int *idade, *telefone, *idadeTemp, *telefoneTemp, test = 0;
+	void *dummy;
 
 	dummy = pBuffer;
 
@@ -205,8 +205,8 @@ void ContactSearch( void *pBuffer, int *userCount ) {
 		return;
 	}
 
-	char nome[10], *pNome = NULL;
-	int *idade = NULL, *telefone = NULL, test = 0;
+	char nome[10], *pNome;
+	int *idade, *telefone, test = 0;
 
 	printf( "Digite sua busca: " );
     scanf( "%9s", nome );
@@ -255,8 +255,8 @@ void ContactList( void *pBuffer, int *userCount ) {
 		return;
 	}
 
-	char *pNome = NULL;
-	int *idade = NULL, *telefone = NULL;
+	char *pNome;
+	int *idade, *telefone;
 
 	for ( int i = 0; i < *userCount; i++ ) {
 		pNome = pBuffer + ( i * SIZE_CONTACT );
