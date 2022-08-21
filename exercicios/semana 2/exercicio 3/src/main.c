@@ -22,9 +22,13 @@ void ContactSearch( void *pBuffer, int *userCount );
 void ContactList( void *pBuffer, int *userCount );
 
 int main() {
-	void *pBuffer = NULL;
+	void *pBuffer;
 	int input, userCheck = 1, userCount = 0;
 	pBuffer = malloc( 1 );
+	if ( pBuffer == NULL ) {
+		printf( "Memoria insuficiente.\n" );
+		return ( 1 );
+	}
 
 	while ( userCheck == 1 ) {
         printf( "\nEscolha uma acao: \n1) Adicionar contato \n2) Remover contato \n3) Procurar \n4) Listar \n5) Sair \n" );
