@@ -86,6 +86,7 @@ StackInfo Pop( char *stack, StackInfo info ) {
     }
 
 	info.size -= 1;
+	stack[info.size] = '\0';
 	info.top = &stack[info.size - 1];
 
 	return ( info );
