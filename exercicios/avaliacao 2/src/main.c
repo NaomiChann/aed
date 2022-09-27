@@ -1,7 +1,7 @@
 /*
 fazer um programa que testa se uma sequencia de caracteres fornecida pelo usuario é
 um palindromo, ou seja, é uma palavra cuja primeira metade é simetrica à segunda metade
-exemplo - aabccbaa = sim
+exemplo - aabccbaa = sim 
 o usuario digita uma letra e a tecla enter ate que ele digite x e enter para terminar a sequencia
 implemente a função pop e push de pilha e resolva o problema com elas
 no video 4 casos de s e n
