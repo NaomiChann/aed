@@ -71,6 +71,12 @@ int main() {
 	return ( 0 );
 }
 
+/*
+====================
+Push
+ Adds to stack
+====================
+*/
 StackInfo Push( char input, char *stack, StackInfo info ) {
 	info.size += 1;
 	info.top = &stack[info.size - 1];
@@ -79,6 +85,12 @@ StackInfo Push( char input, char *stack, StackInfo info ) {
 	return ( info );
 }
 
+/*
+====================
+Pop
+ Removes from stack
+====================
+*/
 StackInfo Pop( char *stack, StackInfo info ) {
 	if ( info.size == 0 ) {
         printf( "erro" );
