@@ -21,7 +21,7 @@ StackInfo Pop( char *stack, StackInfo info );
 
 int main() {
 	StackInfo info, infoCheck;
-	char input, stack[100], stackCheck[100];
+	char input = 'a', stack[100], stackCheck[100];
 	info.size = 0;
 	infoCheck.size = 0;
 	info.bot = &stack[0];
