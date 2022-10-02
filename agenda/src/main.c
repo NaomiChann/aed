@@ -39,7 +39,9 @@ void Pop( int *userCount, char **head, char *nameSearch );
 void Clear( int *userCount, char **head );
 
 int main() {
+	// buffer
 	// |count|input|i|*head|nameSearch[10]|
+	// node
 	// |name[10]|age|phone|*prev|*next|
 
 	void *pBuffer;
@@ -61,25 +63,30 @@ int main() {
 		case 1:
 			Push( userCount, head );
 			break;
+
 		case 2:
 			printf( "Digite o nome a ser removido: " );
 			scanf( "%9s", nameSearch );
 			fflush( stdin );
 			Pop( userCount, head, nameSearch );
 			break;
+
 		case 3:
 			List( userCount, head );
 			break;
+
 		case 4:
 			printf( "Digite sua busca: " );
 			scanf( "%9s", nameSearch );
 			fflush( stdin );
 			PrintContact( Search( userCount, head, nameSearch ) );
 			break;
+
 		case 0:
 			Clear( userCount, head );
 			free( pBuffer );
 			return ( 0 );
+
 		default:
 			printf( "Digite uma opcao valida. \n" );
 			break;
@@ -89,13 +96,17 @@ int main() {
 
 void PrintContact( char **current ) {
 	int *dummyInt;
+
 	if ( current == NULL ) {
 		return;
 	}
+
 	printf( "%s, ", ( char * ) current );
+
 	current = ( char ** ) ( ( char * ) current + 10 );
 	dummyInt = ( int * ) current;
 	printf( "%d anos - ", *dummyInt );
+
 	dummyInt += 1;
 	printf( "telefone: %d \n", *dummyInt );
 }
@@ -108,19 +119,16 @@ void List( int *userCount, char **head ) {
 		printf( "A lista esta vazia. \n" );
 		return;
 	} else {
-		if ( *userCount > 1 ) {
-			printf( "%d usuarios encontrados. \n", *userCount );
-		} else {
-			printf( "%d usuario encontrado. \n", *userCount );
-		}
 		current = ( char ** ) *head;
+
 		for ( *i = 0; *i < *userCount; *i += 1 ) {
 			printf( "<%d> ", *i + 1 );
 			PrintContact( current );
+
 			current = ( char ** ) ( ( char * ) current + 10 );
 			current = ( char ** ) ( ( int * ) current + 2 );
 			current += 1; // *next
-			current = ( char ** ) *current;
+			current = ( char ** ) *current; // current = *next
 		}
 	}
 }
@@ -142,7 +150,7 @@ char **Search( int *userCount, char **head, char *nameSearch ) {
 				current = ( char ** ) ( ( char * ) current + 10 );
 				current = ( char ** ) ( ( int * ) current + 2 );
 				current += 1; // *next
-				current = ( char ** ) *current;
+				current = ( char ** ) *current; // current = *next
 			}
 		}
 		
@@ -152,7 +160,6 @@ char **Search( int *userCount, char **head, char *nameSearch ) {
 }
 
 void Push ( int *userCount, char **head ) {
-	// |name[10]|age|phone|*prev|*next|
 	void *nodeNew;
 	nodeNew = malloc( SIZE_NODE );
 
@@ -162,13 +169,16 @@ void Push ( int *userCount, char **head ) {
 
 	printf( "Digite o nome a ser adicionado: " );
 	scanf( "%9s", dummyChar );
+	fflush( stdin );
 
 	printf( "Digite a idade: " );
 	scanf( "%d", dummyInt );
+	fflush( stdin );
 	dummyInt += 1;
 
 	printf( "Digite o numero de telefone: " );
 	scanf( "%d", dummyInt );
+	fflush( stdin );
 	dummyInt += 1; // *prev
 	
 	current = ( char ** ) dummyInt;
@@ -180,14 +190,16 @@ void Push ( int *userCount, char **head ) {
 	if ( *head == NULL ) {
 		*head = nodeNew;
 	} else {
-		current = ( char ** ) *head; // current = head
+		current = ( char ** ) *head;
 
 		for ( *i = 0; *i < *userCount; *i += 1 ) {
 			dummyCurrent = current;
+
 			if ( strcmp( dummyChar, ( char * ) current ) > 0 ) { // after
 				dummyCurrent = ( char ** ) ( ( char * ) dummyCurrent + 10 );
 				dummyCurrent = ( char ** ) ( ( int * ) dummyCurrent + 2 );
 				dummyCurrent += 1; // *next
+
 				if ( *dummyCurrent == NULL ) { // if current's *next = NULL
 					*dummyCurrent = ( char * ) nodeNew;
 					dummyNode = ( char ** ) ( ( char * ) dummyNode + 10 );
@@ -202,6 +214,7 @@ void Push ( int *userCount, char **head ) {
 			} else if ( strcmp( dummyChar, ( char * ) current ) < 0 ) { // before
 				dummyCurrent = ( char ** ) ( ( char * ) dummyCurrent + 10 );
 				dummyCurrent = ( char ** ) ( ( int * ) dummyCurrent + 2 ); // *prev
+
 				if ( *dummyCurrent == NULL ) { // if current's *prev = NULL
 					*dummyCurrent = ( char * ) nodeNew;
 					dummyNode = ( char ** ) ( ( char * ) dummyNode + 10 );
@@ -228,6 +241,7 @@ void Push ( int *userCount, char **head ) {
 					*dummyCurrent = ( char * ) nodeNew; // prev's *next = node
 					break; // middle case
 				}
+
 			} else { // already exists
 				printf( "Este nome ja existe. \n" );
 				free( nodeNew );
@@ -240,6 +254,7 @@ void Push ( int *userCount, char **head ) {
 
 void Pop( int *userCount, char **head, char *nameSearch ) {
 	char **current = Search( userCount, head, nameSearch ), **dummyCurrent = current, **prev, **next;
+
 	if ( current != NULL ) {
 		dummyCurrent = ( char ** ) ( ( char * ) dummyCurrent + 10 );
 		dummyCurrent = ( char ** ) ( ( int * ) dummyCurrent + 2 ); // *prev
@@ -249,8 +264,8 @@ void Pop( int *userCount, char **head, char *nameSearch ) {
 		} else {
 			prev = ( char ** ) *dummyCurrent;
 		}
-
 		dummyCurrent += 1; // *next
+
 		if ( *dummyCurrent == NULL ) {
 			next = NULL;
 		} else {
@@ -265,7 +280,7 @@ void Pop( int *userCount, char **head, char *nameSearch ) {
 
 			prev = ( char ** ) ( ( char * ) prev - 10 );
 			prev = ( char ** ) ( ( int * ) prev - 2 );
-			prev -= 1;
+			prev -= 1; // sets back to its starting position
 
 			next = ( char ** ) ( ( char * ) next + 10 );
 			next = ( char ** ) ( ( int * ) next + 2 ); // *prev
@@ -284,7 +299,7 @@ void Pop( int *userCount, char **head, char *nameSearch ) {
 
 			next = ( char ** ) ( ( char * ) next - 10 );
 			next = ( char ** ) ( ( int * ) next - 2 );
-			*head = ( char * ) next;
+			*head = ( char * ) next; // sets back to its starting position
 
 		} else {
 			*head = NULL;
@@ -300,10 +315,11 @@ void Pop( int *userCount, char **head, char *nameSearch ) {
 void Clear( int *userCount, char **head ) {
 	char **current, **dummyCurrent;
 	int *i = userCount + 2;
+
 	if ( *head == NULL ) {
 		return;
 	} else {
-		current = ( char ** ) *head; // current = head
+		current = ( char ** ) *head;
 		dummyCurrent = current;
 
 		for ( *i = 0; *i < ( *userCount - 1 ); *i += 1 ) {
